@@ -1,3 +1,4 @@
+# ML-EXP8
 # Implementation-of-Decision-Tree-Classifier-Model-for-Predicting-Employee-Churn
 
 ## AIM:
@@ -8,49 +9,74 @@ To write a program to implement the Decision Tree Classifier Model for Predictin
 2. Anaconda – Python 3.7 Installation / Jupyter notebook
 
 ## Algorithm
-### 1.Load the employee churn dataset and preprocess the data.
-### 2.Split the dataset into training and testing sets. 
-### 3.Train the Decision Tree Classifier using the training data. 
-### 4.Predict employee churn and evaluate the model accuracy using the testing data.
+ 1. Start the program.
+ 2. Attach the given data file.
+ 3. Now find the satisfaction level of employee data.
+ 4. Find the accuracy and new predict value.
+ 5. End the program.
 
 ## Program:
 ```
 /*
 Program to implement the Decision Tree Classifier Model for Predicting Employee Churn.
 Developed by: JAYACHITRA J
-RegisterNumber:  212224040132
+RegisterNumber: 212224040132
 */
-
+```
+```
 import pandas as pd
-import matplotlib.pyplot as plt
+from sklearn.tree import DecisionTreeClassifier,plot_tree
+data=pd.read_csv("Employee.csv")
+data.head()
+data.info()
+data.isnull().sum()
+data["left"].value_counts()
+from sklearn.preprocessing import LabelEncoder
+le=LabelEncoder()
+data["salary"]=le.fit_transform(data["salary"])
+data.head()
+x = data[["satisfaction_level", "last_evaluation", "number_project", "average_montly_hours", 
+          "time_spend_company", "Work_accident", "promotion_last_5years", "salary"]]
+x.head() #no departments and no left
+y=data["left"]
 from sklearn.model_selection import train_test_split
-from sklearn.tree import DecisionTreeClassifier, plot_tree
-from sklearn.metrics import accuracy_score
-data = pd.read_csv("Employee.csv")
-data = pd.get_dummies(data, drop_first=True)
-X = data.iloc[:, :-1]
-y = data.iloc[:, -1]
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.2,random_state=100)
+from sklearn.tree import DecisionTreeClassifier
+dt=DecisionTreeClassifier(criterion="entropy")
+dt.fit(x_train,y_train)
+y_pred=dt.predict(x_test)
+from sklearn.metrics import accuracy_score, classification_report
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy :", accuracy)
+print("\nClassification Report:\n")
+print(classification_report(y_test, y_pred))
+sample = pd.DataFrame(
+    [[0.5,0.8,9,260,6,0,1,2]],
+    columns=x.columns
 )
-model = DecisionTreeClassifier(random_state=42)
-model.fit(X_train, y_train)
-y_pred = model.predict(X_test)
-print("Accuracy:", accuracy_score(y_test, y_pred))
+
+dt.predict(sample)
+import matplotlib.pyplot as plt
 plt.figure(figsize=(20,10))
 
 plot_tree(
-    model,
-    feature_names=X.columns,
-    filled=True
+    dt,
+    feature_names=x.columns,
+    class_names=['stayed','left'],
+    filled=True,
+    max_depth=3
 )
 
 plt.show()
-
 ```
 
 ## Output:
-<img width="1554" height="821" alt="image" src="https://github.com/user-attachments/assets/360952a4-8a99-4d58-8cf4-5298219b9cd5" />
+
+<img width="636" height="318" alt="image" src="https://github.com/user-attachments/assets/efbe369b-4783-42a5-8e4f-2a1e2d1c1b54" />
+<img width="1052" height="682" alt="image" src="https://github.com/user-attachments/assets/3fee60ee-ecc9-4536-8819-ecb108dad853" />
+
+
+
 
 
 
